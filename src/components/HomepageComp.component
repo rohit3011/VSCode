@@ -1,0 +1,144 @@
+<apex:component access="global">
+
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400' rel='stylesheet' type='text/css'/>
+<link rel="stylesheet" href="{!URLFOR($Resource.ddmenu)}"/>
+
+<style>
+    .header{
+        width: 100%;
+        height: 100px;
+        background-color: #009fe2;
+    }
+
+    .header .logo {
+        padding: 22px 10px 0px 10px;
+        float: left;
+        width: 136px;
+        height: 53px;
+    }
+    .top-menu2 {
+        
+    }
+    <!-- Added by rohit for GMS-2107-->
+    .drop_menu li:hover ul li a {
+        padding:5px 20px;
+        display:block;
+    }
+    
+   <!-- Added by rohit for GMS-2107-->
+   .drop_menu ul {    
+        padding-left: 20px !important
+    }
+    .top-right{
+        float: right;
+        margin-right: 25%;
+        margin-top: 2.5%;
+    }
+    .drop_menu {
+
+        /*! padding:0; */
+        /*! margin:0; */
+        /*! list-style-type:none; */
+        /*! height:30px; */
+    }
+    .drop_menu li { 
+        float:left; list-style:none;
+        list-style-type:none;
+    }
+    .drop_menu li a {
+        padding:6px 20px;
+        display:block;
+        color:#fff;
+        text-decoration:none;
+        font-family: 'Open Sans', sans-serif;
+        /*font-weight:bold;--removed by UI Dev*/
+        font-size:14px;
+    }
+
+    /* Submenu */
+    .drop_menu ul {
+        position:absolute;
+        left:-9999px;
+        top:-9999px;
+        list-style-type:none;
+        z-index:10000;
+    }
+    .drop_menu li:hover { 
+        position:relative; background:#8dc9e8; 
+    }
+    .drop_menu li:hover ul {
+        left:-20px;
+        top:30px;
+        /*background:#5FD367;*/
+        padding:0px;
+    }
+
+    .drop_menu li:hover ul li a {
+        padding:5px 10px 5px 10px;
+        display:block;
+        width:160px;
+        /*text-indent:15px;*/
+        background-color:#8dc9e8;
+        text-align:left;
+    }
+    .drop_menu li:hover ul li a:hover { background:#009fe2; }
+        .clr {
+            content: " ";
+            display: block;
+            height: 0;
+            clear: both;
+            overflow: hidden;
+            visibility: hidden;
+        }
+
+    @media only screen and (-webkit-min-device-pixel-ratio: 2) {
+        .header .logo-img{
+            background-image:url("{!URLFOR($Resource.Trailhead,'Trailhead.png')}");
+            background-repeat: no-repeat;
+            background-size: 136px 53px;
+            width:136px;
+            height:53px;
+        }
+    }
+</style>
+
+    <!-- <c:TabHighlighter /> -->
+    
+    <!-- Wrapper Start -->
+         
+    <div class="wrapper">
+        <!-- header Start -->
+        <div class="header">
+            <!-- Logo Start -->
+            <div class="logo">
+                <table><tr><td>
+                    <a href="http://www.google.com" target="_blank">
+                        <span style="font-size:25px; color:#fff; margin-top: 10px; position: absolute; padding-left:10px;">Rohit Dev Account</span>
+                    </a>
+                </td></tr></table>
+            </div>   
+            
+            <div class="top-right"> 
+                
+                <div class="clr"></div>
+                
+                <div class="top-menu2" >
+                    <div id="menu" class="drop">
+                        <ul class="drop_menu">
+                            <li id="homepage"><a href='{!$Site.Prefix}/apex/GoogleApi_NearbyBankList?l=en'>Banks List</a></li>
+                            <li id="product"><a href='{!$Site.Prefix}/googleMap_DirectionBetweenTwoPlaces?l=en'>Google Map</a></li>
+                        </ul>
+                    </div>
+                </div>
+                
+            </div>
+            <!-- Logo End -->
+        </div>
+        
+        <div class="clr"></div>
+        <!-- header End -->
+        
+    </div>
+        
+
+</apex:component>

@@ -1,0 +1,43 @@
+<apex:component >
+
+  <script type="text/ng-template" id="temp1">
+      alert('HI');
+    <h1>Hello, my name is {{::template.name}}</h1>
+  </script>
+  
+<!--
+    <div style="width:100%; background-color: white !important;">
+     <div>   
+        <div style="height: 60px;background-color: #F8F8F8;">
+            <div class="h1Text">Contact Us: Submit a Case</div>            
+        </div>
+    </div> 
+    
+    <div style="background-color: white !important;">
+
+    <div class="maincontentnew" style="position: relative; background-color: white !important;"> 
+    
+    </div>
+
+    <div class="" style="background: #F7FBFA;width: 30%;margin: 6% 5% 0% 0%;padding-bottom:5px;position: absolute;top: 0;right: 0;padding: 10px 10px 20px 30px;">
+        <span id="pageid:formid:PbId:ExLibrisInfoPanel">
+            <span style="font-family:'Open Sans',sans-serif;font-size:14px;">
+                <p>Please note submitting cases for 360 Services, Intota, KnowledgeWorks, Summon, and Ulrich's have migrated and are now available within the Ex Libris Support Portal. </p>
+                <p>If you do not see your product/service listed as an option in the Product drop down menu,</p>
+                    <div>
+                        <a href=" http://www.proquest.com/go/support_ss ">
+                        <h3>log in to the Ex Libris Support Portal</h3>
+                        </a>
+                    </div><p></p>
+            </span>
+        </span>
+    </div> 
+
+    </div>
+
+    
+</div>
+
+  -->
+
+</apex:component>

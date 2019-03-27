@@ -1,0 +1,126 @@
+<apex:page standardStylesheets="false" docType="html-5.0" applyHtmlTag="false" applyBodyTag="false" showHeader="false" sidebar="false">
+  
+  <!-- https://developers.google.com/maps/documentation/javascript/examples/directions-simple --> 
+  <!-- https://developers.google.com/maps/documentation/javascript/examples/places-autocomplete-directions -->
+  
+       
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCeH9tqujaUSMyBeOhaqeGOPzCLYAiHf9o&callback=initMap"></script>
+        
+        <html>
+            <head>
+                <title>Geocoding service</title>
+                <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
+                <meta charset="utf-8"/>
+                
+                <style>                
+                    #map {
+                        height: 100%;
+                    }
+                    html, body {
+                        height: 100%;
+                        margin: 0;
+                        padding: 0;
+                    }
+                    #floating-panel {
+                        position: absolute;
+                        top: 10px;
+                        left: 25%;
+                        z-index: 5;
+                        background-color: #fff;
+                        padding: 5px;
+                        border: 1px solid #999;
+                        text-align: center;
+                        font-family: 'Roboto','sans-serif';
+                        line-height: 30px;
+                        padding-left: 10px;
+                    }
+                </style>
+            </head>
+            
+            <body onload="initMap()">
+            
+                <div id="floating-panel">            
+                    <b>Start: </b>
+                    <select id="start">
+                        <option value="Bikaner Rajasthan">Bikaner</option>
+                        <option value="Alwar Rajasthan">Alwar</option>
+                        <option value="Chennai Tamil Nadu">Chennai</option>
+                        <option value="Pune Maharashtra">Pune</option>
+                    </select>
+                    <b>End: </b>
+                    <select id="end">
+                      <option value="New Delhi Delhi">New Delhi</option>
+                      <option value="Mumbai Maharashtra">Mumbai</option>
+                      <option value="Jaipur Rajasthan">Jaipur</option>
+                      <option value="Ajmer Rajasthan">Ajmer</option>
+                    </select>
+                </div>
+                
+                <div id="map"></div>
+                    
+                <script>
+                    var LatLng;
+                    function initMap() {
+                        var directionsService = new google.maps.DirectionsService;
+                        var directionsDisplay = new google.maps.DirectionsRenderer;
+                        
+                        var map = new google.maps.Map(document.getElementById('map'), {
+                            zoom: 8,
+                            center: {lat: 41.85, lng: -87.65}
+                        });
+                        console.log('*****map***'+map)
+                        
+                        directionsDisplay.setMap(map);
+                        
+                        var geocoder = new google.maps.Geocoder();
+                        console.log('*****geocoder***'+geocoder)
+                        
+                        var infoWindow = new google.maps.InfoWindow({map: map});
+                            
+                        if (navigator.geolocation) {
+                            navigator.geolocation.getCurrentPosition(function(position) {
+                                var pos = {
+                                    lat: position.coords.latitude,
+                                    lng: position.coords.longitude
+                                };
+                                LatLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                                console.log('*****LatLng***'+LatLng)
+                            }, function() {
+                                handleLocationError(true, infoWindow, map.getCenter());
+                            });
+                        } 
+                        else {
+                            // Browser doesn't support Geolocation
+                            handleLocationError(false, infoWindow, map.getCenter());
+                        }
+
+                        var onChangeHandler = function() {
+                            calculateAndDisplayRoute(directionsService, directionsDisplay);
+                        };
+                        document.getElementById('start').addEventListener('change', onChangeHandler);                    
+                        document.getElementById('end').addEventListener('change', onChangeHandler);                    
+                    }
+                    
+                    function calculateAndDisplayRoute(directionsService, directionsDisplay) {
+                        directionsService.route({
+                            // use origin: LatLng for the direction between users location and selected location 
+                            origin: document.getElementById('start').value,
+                            destination: document.getElementById('end').value,
+                            travelMode: 'DRIVING'
+                            }, function(response, status) {
+                                alert(status);
+                                alert(response);
+                                if (status === 'OK') {
+                                    directionsDisplay.setDirections(response);
+                                } 
+                                else {
+                                    window.alert('Directions request failed due to ' + status);
+                                }
+                        });
+                    }
+                    
+                </script>
+        
+            </body>
+        </html>
+    </apex:page>

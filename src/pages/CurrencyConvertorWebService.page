@@ -1,0 +1,13 @@
+<apex:page controller="WebserviceCall">  
+    <apex:form >
+        <apex:PageBlock >
+            <apex:commandButton action="{!convertCurrency}" value="Initiate Webservice Call" /> <br /><br />
+
+                From Currency :<apex:inputText value="{!currencyFrom}"/><br />
+                To Currency &nbsp; &nbsp;:<apex:inputText value="{!currencyTo}"/><br /><br />
+
+                Converte Currency value is  --->  <apex:OutputText value="{!convertedCurrencyValue}"/>
+
+        </apex:PageBlock>
+    </apex:form>
+</apex:page>

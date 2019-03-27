@@ -1,0 +1,500 @@
+<apex:page controller="json_trainBetweenStations" extensions="json_trainSeatAvailability,json_trainroute" id="pageId" standardStylesheets="false" sidebar="false" showHeader="false" docType="html-5.0">
+    
+    <head>
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" />
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" ></script>
+        <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js" />
+		<apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.0/jquery-ui.min.js" />
+		<apex:styleSheet value="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.0/themes/smoothness/jquery-ui.css" />
+            
+        <style>
+            .container-fluid {
+            margin-top: 10px;
+            }
+            .first-column {
+              width: 40%;
+              float: left;
+            }
+            .second-column {
+              width: 60%;
+              float: left;
+            }
+            .col-sm-2 {
+                width: 36.66666667%;
+            }
+            .col-sm-10 {
+                width: 53.33333333%;
+            }
+            thead{
+                background-color: #d6e6fb;
+            }
+        </style>
+        
+        <style>
+            .displayNone { 
+                display:none; 
+            }
+            .displayBlock {
+                display:block;
+            }
+            .ui-autocomplete-loading { 
+                background: white url(/img/loading32.gif) right center no-repeat;
+                background-size:15px 15px; 
+            }
+            .PLACEHOLDERFromStation {
+                font-style: italic;
+            }
+        	.PLACEHOLDERToStation {
+                font-style: italic;
+            }
+
+        </style>
+        
+        <style type="text/css">
+        .custPopup{
+            background-color: white;
+            border-width: 2px;
+            border-style: solid;
+            z-index: 9999;
+            left: 50%;
+            padding:10px;
+            position: absolute;
+            /* These are the 3 css properties you will need to change so the popup
+            displays in the center of the screen. First set the width. Then set
+            margin-left to negative half of what the width is. You can add
+            the height property for a fixed size pop up if you want.*/
+            width: 500px;
+            margin-left: -250px;
+            top:100px;
+            overflow-y: auto;
+            height: 70%;
+        }
+        .popupBackground{
+            background-color:black;
+            opacity: 0.20;
+            filter: alpha(opacity = 20);
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 9998;
+        }
+        
+        <!-- next two style is to add the scrollbar in the dialog window, removing this will also work fine-->    
+        .modal-dialog{
+            overflow-y: initial !important
+        }
+        .modal-body{
+            height: 500px;
+            overflow-y: auto;
+        }    
+
+    </style>
+
+    <script>
+        function generatedJs(){
+            $("#myModal").modal();
+        }
+        </script>    
+        
+        
+    </head>
+    
+    
+    
+    <body>
+        <div>
+            <apex:outputpanel >
+                <apex:actionstatus id="actStatusId">
+                    <apex:facet name="start">
+                        <div class="waitingSearchDiv" id="el_loading" style="background-color: #DCD6D6;
+                               height: 100%;opacity:0.65;width:100%;position:absolute;top: 0;right: 0;bottom: 0;left: 0;"> 
+                            <div class="waitingHolder" style="margin-left: 40%;">
+                                <img class="waitingImage" src="/img/loading.gif" title="Please Wait..." />
+                                <span class="waitingDescription" style="font-size: 20px;font-family: Times new roman !important;">Searching...</span>
+                            </div>
+                        </div>
+                    </apex:facet>
+                </apex:actionstatus>
+            </apex:outputpanel> 
+        </div>    
+        
+        <apex:form id="frmId">        
+            <div class="container-fluid">
+                <div class="page-header">
+                    <h3>Indian railway reservation system</h3>
+                </div>
+              <!--  <p class="lead">Pin a fixed-height footer to the bottom of the viewport in desktop browsers with this custom HTML and CSS.</p>  -->
+                
+                <div class="row">
+                    <div>
+                    <div class="col-md-3" style="display:block; background-color: #f5f5f5;">
+                        <h4>Trains between station</h4>
+                        <span class="text-muted">Plan your journey</span>
+                        
+                        <h4>Select Favourite Journey List</h4>
+                        
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <label for="inputEmail3" class="col-sm-2 control-label">From Station</label>
+                                <div class="col-sm-10">
+                                    <apex:inputText styleClass="PLACEHOLDERFromStation" id="fromStationId" value="{!fromStation}"/>
+                                    <apex:inputHidden id="selectedFromStationId" value="{!selectedFromStation}" />                                       
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="inputEmail3" class="col-sm-2 control-label">To Station</label>
+                                <div class="col-sm-10">
+                                    <apex:inputText styleClass="PLACEHOLDERToStation" id="toStationId" value="{!toStation}"/>
+                                    <apex:inputHidden id="selectedToStationId" value="{!selectedToStation}" />
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="inputEmail3" class="col-sm-2 control-label">Travel Date</label>
+                                <div class="col-sm-10">
+                                    <apex:input styleClass="form-control" type="date" id="datepicker" value="{!travelDate}"  size="10" onfocus="DatePicker.pickDate(false, this, false);"/>                                    
+                                </div>
+                            </div>                           
+                                  
+                           <apex:commandButton action="{!submit}" styleClass="btn btn-primary" style="margin-left: 40%;" value="Submit" status="actStatusId" rerender="tstpopup, resultsPanel, resultsPanel1, resultsPanel2"/>
+                 
+                            
+                        </div>
+                        </div>      
+                    </div>
+                    
+                    
+                    <script type="text/javascript">
+                        var PLACEHOLDERFromStation = 'From Station';
+                    	var PLACEHOLDERToStation = 'To Station';
+                        var movieObjects;
+                        var queryTerm;
+                    	
+						// Show values for the From Station
+                    	$('[id$=fromStationId]').autocomplete({
+                           	minLength: 2,
+                            source: function(request, response) {
+                                queryTerm = request.term;
+                                json_trainBetweenStations.searchStationName(request.term, function(result, event){
+                                    if(event.type == 'exception') {
+                                    } else {
+                                        movieObjects = result;
+                                        response(movieObjects);
+                                    }
+                                });
+                            },
+                            focus: function( event, ui ) {
+                                    $('[id$=fromStationId]').val( ui.item.MasterLabel );
+                                    return false;
+                                    },
+                            select: function( event, ui ) {
+                                $('[id$=fromStationId]').val( ui.item.MasterLabel );
+                                $('[id$=selectedFromStationId]').val( ui.item.MasterLabel );
+                                return false;
+                            },
+                        }).data( "ui-autocomplete" )._renderItem = function( ul, item ) { // added it here to bind the .data property with the field, else value is not visible and drpdown is kind of hidden
+                            var entry = "<a>" + item.MasterLabel;
+                            entry = entry + "</a>";
+                            entry = entry.replace(queryTerm, "<b>" + queryTerm + "</b>");
+                            
+                            return $('<li></li>')
+                            .data( "item.autocomplete", item )
+                            .append( entry )
+                            .appendTo( ul );
+                           
+                        };
+						
+						// Show values for the To Station
+						$('[id$=toStationId]').autocomplete({
+                           	minLength: 2,
+                            source: function(request, response) {
+                                queryTerm = request.term;
+                                json_trainBetweenStations.searchStationName(request.term, function(result, event){
+                                    if(event.type == 'exception') {
+                                    } else {
+                                        movieObjects = result;
+                                        response(movieObjects);
+                                    }
+                                });
+                            },
+                            focus: function( event, ui ) {
+                                    $('[id$=toStationId]').val( ui.item.MasterLabel );
+                                    return false;
+                                    },
+                            select: function( event, ui ) {
+                                $('[id$=toStationId]').val( ui.item.MasterLabel );
+                                $('[id$=selectedToStationId]').val( ui.item.MasterLabel );
+                                return false;
+                            },
+                        }).data( "ui-autocomplete" )._renderItem = function( ul, item ) { // added it here to bind the .data property with the field, else value is not visible and drpdown is kind of hidden
+                            var entry = "<a>" + item.MasterLabel;
+                            entry = entry + "</a>";
+                            entry = entry.replace(queryTerm, "<b>" + queryTerm + "</b>");
+                            
+                            return $('<li></li>')
+                            .data( "item.autocomplete", item )
+                            .append( entry )
+                            .appendTo( ul );
+                           
+                        };	
+                        
+                        
+                    
+                    
+                    	// Add or remove placeholder values
+                        $('[id$=fromStationId]').val(PLACEHOLDERFromStation);
+                    	$('[id$=toStationId]').val(PLACEHOLDERToStation);
+                    
+                        $('[id$=fromStationId],[id$=toStationId]').on("focus",  function(event){
+                            $tgt = $(event.target);
+                            $tgtId = $(event.target.id);
+                            if($tgt.val() === PLACEHOLDERFromStation ){
+                                $tgt.val('');
+                                $tgt.removeClass('PLACEHOLDERFromStation');
+                            }
+                            if($tgt.val() === PLACEHOLDERToStation ){
+                                $tgt.val('');
+                                $tgt.removeClass('PLACEHOLDERToStation');
+                            }
+                        });
+                        
+                    	$('[id$=fromStationId]').on( "blur",  function(event){
+                            $tgt = $(event.target);
+                            if($tgt.val() === '' ){
+                                $tgt.val(PLACEHOLDERFromStation);
+                                $tgt.addClass('PLACEHOLDERFromStation');
+                            }
+                        });
+                    	
+                    	$('[id$=toStationId]').on( "blur",  function(event){
+                            $tgt = $(event.target);
+                            if($tgt.val() === '' ){
+                                $tgt.val(PLACEHOLDERToStation);
+                                $tgt.addClass('PLACEHOLDERToStation');
+                            }
+                        });
+                    </Script>
+                    
+                    
+              <!--      <apex:outputPanel id="tstpopup">
+                        <apex:outputPanel styleClass="popupBackground" layout="block" rendered="{!displayPopUp}"/>
+                        <apex:outputPanel styleClass="custPopup" layout="block" rendered="{!displayPopUp}">
+                            This is where I would put whatever information I needed to show to my end user.<br/><br/><br/>
+                            This is where I would put whatever information I needed to show to my end user.<br/><br/><br/>
+                            This is where I would put whatever information I needed to show to my end user.<br/><br/><br/>
+                            This is where I would put whatever information I needed to show to my end user.<br/><br/><br/>
+                            This is where I would put whatever information I needed to show to my end user.<br/><br/><br/>
+                            This is where I would put whatever information I needed to show to my end user.<br/><br/><br/>
+                            This is where I would put whatever information I needed to show to my end user.<br/><br/><br/>
+                            <apex:commandButton value="Hide Pop up" action="{!closePopup}" rerender="tstpopup"/>
+                        </apex:outputPanel>
+                    </apex:outputPanel> -->
+                    
+                    
+                    <!-- Modal -->
+                    <div class = "modal fade" id = "myModal" tabindex = "-1" role = "dialog" aria-labelledby = "myModalLabel" aria-hidden = "true">   
+                        <div class = "modal-dialog">                            
+                            <div class = "modal-content">         
+                                <div class = "modal-header">
+                                    <button type = "button" class = "close" data-dismiss = "modal" aria-hidden = "true">
+                                    &times;
+                                    </button>            
+                                    <h4 class = "modal-title" id = "myModalLabel">This Modal title</h4>
+                                </div>                              
+                                
+                                <apex:outputPanel id="resultsPanel11">
+                                <apex:outputPanel rendered="{!!ISBLANK(listTrainRoute)}">
+                                
+                                <div class = "modal-body">
+                                    
+                                    <div class="table-responsive">
+                                    <table class="table table-bordered" style="font-size:11px;border-right-style: solid;">
+                                        <thead>
+                                            <tr>
+                                                <th>Train number</th>
+                                                <th>Train Name</th>
+                                                <th>From Station</th>
+                                                <th>Destination Station</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                              <td>{!selectedTrainNumber}</td>  
+                                              <td>{!selectedTrainName}</td>  
+                                              <td>{!selectedFromStation}</td>  
+                                              <td>{!selectedDestStation}</td> 
+                                            </tr>
+                                        </tbody>    
+                                    </table>    
+                                </div>
+                                    
+                                    <h5 class="text-center">Hello. Some text here.</h5>
+                                    <div class="table-responsive">
+                                        <apex:dataTable styleClass="table table-bordered" style="font-size:11px;border-right-style: solid;" value="{!stationCode}" var="route" rendered="{!!ISBLANK(listTrainRoute)}">
+                                            <apex:column headerValue="Station code">{!route}</apex:column>
+                                            <apex:column headerValue="Station Name">{!route_fullName[route]}</apex:column>
+                                            <apex:column headerValue="Route Number">{!route_no[route]}</apex:column>
+                                            <apex:column headerValue="Arrival Time">{!route_scharr[route]}</apex:column>
+                                            <apex:column headerValue="Departure Time">{!route_schdep[route]}</apex:column>
+                                            <apex:column headerValue="Halt Time">{!route_halt[route]}</apex:column>
+                                            <apex:column headerValue="Distance">{!route_distance[route]}</apex:column>
+                                            <apex:column headerValue="Day">{!route_day[route]}</apex:column>
+                                            
+                                        </apex:dataTable>
+                                    </div>
+                                </div>
+                                </apex:outputPanel>
+                                </apex:outputPanel>
+                                <div class = "modal-footer">
+                                    <button type = "button" class = "btn btn-default" data-dismiss = "modal">
+                                       Close
+                                    </button>
+                                </div>         
+                            </div><!-- /.modal-content -->
+                        </div><!-- /.modal-dialog -->  
+                    </div><!-- /.modal -->
+                    
+                    
+                    <div class="col-md-9">  
+                        <h3 class="page-header">Results</h3>
+                        <p>This example calls the Railway API (JSON) to find the station between two stations you provide below.</p>
+            
+                        <p>Sometimes the railway API stops responding due to service availability. If you are receiving errors
+                        with the returned JSON object, you can check the "Use hard-coded JSON response" to use a returned JSON
+                        response hard-coded into the controller from the railway API website.</p>
+                        
+                            
+                            
+                        <div class="table-responsive">
+                            <apex:outputPanel id="resultsPanel1">
+                                <apex:outputPanel rendered="{!!ISBLANK(availStatusDate)}">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>{!availStatusDate[0]}</th>
+                                                <th>{!availStatusDate[1]}</th>
+                                                <th>{!availStatusDate[2]}</th>
+                                                <th>{!availStatusDate[3]}</th>
+                                                <th>{!availStatusDate[4]}</th>
+                                                <th>{!availStatusDate[5]}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                              <td>Availability</td>
+                                              <td>{!availStatus[0]}</td>  
+                                              <td>{!availStatus[1]}</td>  
+                                              <td>{!availStatus[2]}</td>  
+                                              <td>{!availStatus[3]}</td>  
+                                              <td>{!availStatus[4]}</td>  
+                                              <td>{!availStatus[5]}</td>    
+                                            </tr>
+                                        </tbody>    
+                                    </table>
+                                </apex:outputPanel>
+                            </apex:outputPanel>    
+                        </div>
+                                
+                            
+                        
+                        <div class="table-responsive">
+                            <apex:outputPanel id="resultsPanel">
+                                <apex:dataTable styleClass="table table-bordered" style="font-size:11px;border-right-style: solid;" value="{!list_TrainName}" var="train" rendered="{!!ISBLANK(list_TrainName)}">
+                                    <!--<apex:column headerValue="Train Number">{!trainNumber[train]}</apex:column>-->
+                                    <apex:column headerValue="Train Number">
+                                        <apex:commandLink value="{!trainNumber[train]}" action="{!showTrainRoute}" status="actStatusId" rerender="resultsPanel, resultsPanel1, resultsPanel11, resStatus"  oncomplete="generatedJs()">
+                                            <apex:param name="selectedTrainNumber" assignTo="{!selectedTrainNumber}" value="{!trainNumber[train]}" />       
+                                            <apex:param name="selectedTrainName" assignTo="{!selectedTrainName}" value="{!train}" />        
+                                            <apex:param name="selectedFromStation" assignTo="{!selectedFromStation}" value="{!trainSourceStatName[train]}" />       
+                                            <apex:param name="selectedDestStation" assignTo="{!selectedDestStation}" value="{!trainDesStatName[train]}" />      
+                                        </apex:commandLink>
+                                    </apex:column>
+                                    <apex:column headerValue="Train Name">{!train}</apex:column>
+                                    <apex:column headerValue="From">{!trainSourceStatCode[train]}</apex:column>
+                                    <apex:column headerValue="Departure">{!schDepTime[train]}</apex:column>
+                                    <apex:column headerValue="To">{!trainDesStatCode[train]}</apex:column>
+                                    <apex:column headerValue="Arrival">{!destinationArrTime[train]}</apex:column>
+                                    <apex:column headerValue="Travel Time">{!travelTime[train]}</apex:column>
+                                    <apex:column headerValue="Mon">
+                                        <apex:image URL="{!if(trainRunOnDays[train][0] == 'Y', $Resource.Right, $Resource.Wrong)}"/>
+                                    </apex:column>
+                                    <apex:column headerValue="Tue">
+                                        <apex:image URL="{!if(trainRunOnDays[train][1] == 'Y', $Resource.Right, $Resource.Wrong)}"/>
+                                    </apex:column>
+                                    <apex:column headerValue="Wed">
+                                        <apex:image URL="{!if(trainRunOnDays[train][2] == 'Y', $Resource.Right, $Resource.Wrong)}"/>
+                                    </apex:column>
+                                    <apex:column headerValue="Thu">
+                                        <apex:image URL="{!if(trainRunOnDays[train][3] == 'Y', $Resource.Right, $Resource.Wrong)}"/>
+                                    </apex:column>
+                                    <apex:column headerValue="Fri">
+                                        <apex:image URL="{!if(trainRunOnDays[train][4] == 'Y', $Resource.Right, $Resource.Wrong)}"/>
+                                    </apex:column>
+                                    <apex:column headerValue="Sat">
+                                        <apex:image URL="{!if(trainRunOnDays[train][5] == 'Y', $Resource.Right, $Resource.Wrong)}"/>
+                                    </apex:column>
+                                    <apex:column headerValue="Sun">
+                                        <apex:image URL="{!if(trainRunOnDays[train][6] == 'Y', $Resource.Right, $Resource.Wrong)}"/>
+                                    </apex:column>
+                                    
+                                    <apex:column headerValue="Availability">
+                                        <apex:commandLink value="{!listOfAvailableClasses[train][0]}" action="{!showAvailability}" status="actStatusId" rerender="resultsPanel, resultsPanel1, resultsPanel11, resStatus">
+                                            <apex:param name="classOne" assignTo="{!classOne}" value="{!trainNumber[train]}" />
+                                            <apex:param name="classOne1" assignTo="{!classOne1}" value="{!listOfAvailableClasses[train][0]}"/>
+                                            <apex:param name="classOne2" assignTo="{!classOne2}" value="{!trainDesStatCode[train]}"/>
+                                        <!--    <apex:param name="classOne2" assignTo="{!classOne2}" value="{!listOfAvailableClasses[train][0]}" />
+                                            <apex:param name="classOne3" assignTo="{!classOne3}" value="{!listOfAvailableClasses[train][0]}" /> -->
+                                        </apex:commandLink>&nbsp;&nbsp;&nbsp;
+                                        <apex:commandLink value="{!listOfAvailableClasses[train][1]}" action="{!showAvailability}" status="actStatusId" rendered="{!(trainClassesCount[train] > 1)}" rerender="resultsPanel, resultsPanel1, resStatus">
+                                            <apex:param name="classOne" assignTo="{!classOne}" value="{!trainNumber[train]}" />
+                                            <apex:param name="classOne1" assignTo="{!classOne1}" value="{!listOfAvailableClasses[train][1]}"/>
+                                            <apex:param name="classOne2" assignTo="{!classOne2}" value="{!trainDesStatCode[train]}"/>
+                                        </apex:commandLink>&nbsp;&nbsp;&nbsp;
+                                        <apex:commandLink value="{!listOfAvailableClasses[train][2]}" action="{!showAvailability}" status="actStatusId" rendered="{!(trainClassesCount[train] > 2)}" rerender="resultsPanel, resultsPanel1, resStatus">
+                                            <apex:param name="classOne" assignTo="{!classOne}" value="{!trainNumber[train]}" />
+                                            <apex:param name="classOne1" assignTo="{!classOne1}" value="{!listOfAvailableClasses[train][2]}"/>
+                                            <apex:param name="classOne2" assignTo="{!classOne2}" value="{!trainDesStatCode[train]}"/>
+                                        </apex:commandLink>&nbsp;&nbsp;&nbsp;
+                                        <apex:commandLink value="{!listOfAvailableClasses[train][3]}" action="{!showAvailability}" status="actStatusId" rendered="{!(trainClassesCount[train] > 3)}" rerender="resultsPanel, resultsPanel1, resStatus">
+                                            <apex:param name="classOne" assignTo="{!classOne}" value="{!trainNumber[train]}" />
+                                            <apex:param name="classOne1" assignTo="{!classOne1}" value="{!listOfAvailableClasses[train][3]}"/>
+                                            <apex:param name="classOne2" assignTo="{!classOne2}" value="{!trainDesStatCode[train]}"/>
+                                        </apex:commandLink>&nbsp;&nbsp;&nbsp;                                               
+                                    </apex:column>
+                                </apex:dataTable>
+                            </apex:outputPanel>
+                        </div>  
+                        
+                       <div class="table-responsive">
+                            <apex:outputPanel id="resultsPanel2">
+                                <apex:dataTable styleClass="table table-bordered" style="font-size:11px;border-right-style: solid;" value="{!stationCode}" var="route" rendered="{!!ISBLANK(listTrainRoute)}">
+                                    <apex:column headerValue="Train Number">{!route}</apex:column>
+                                    <apex:column headerValue="Train Number">{!route_fullName[route]}</apex:column>
+                                    <apex:column headerValue="Train Number">{!route_scharr[route]}</apex:column>
+                                    <apex:column headerValue="Train Number">{!route_day[route]}</apex:column>
+                                    <apex:column headerValue="Train Number">{!route_distance[route]}</apex:column>
+                                    <apex:column headerValue="Train Number">{!route_schdep[route]}</apex:column>
+                                </apex:dataTable>   
+                            </apex:outputPanel>
+                        </div>  
+                        
+                    </div>
+                    
+                </div>
+            
+            </div>    
+        </apex:form>
+        
+    </body>
+    <script type="text/javascript">
+        $(function () {
+            $('#datepicker input').datepicker({
+            }); 
+        });
+    </script>
+    
+</apex:page>

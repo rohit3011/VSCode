@@ -1,0 +1,5 @@
+<apex:page controller="RS2_RCMLocationController" action="{!callRenewalStartMethod}" id="OpptyRenewalPage" showHeader="false" sidebar="false"  contentType="text/javascript">
+
+    {!JSonSring}
+  
+</apex:page>

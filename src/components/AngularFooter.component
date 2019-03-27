@@ -1,0 +1,22 @@
+<apex:component >
+  
+    <style>
+        .copyright{
+            color:#adadad; 
+            position: absolute; 
+            bottom: 0; 
+            left: 0; 
+            right: 0; 
+            background: black; 
+            color: #fff !important;  
+            height: 40px; 
+            padding-top: 20px; 
+            padding-left: 20px;  
+        }    
+    </style>
+  
+    <footer>
+        <div class="copyright">© 2017, ProQuest LLC All rights reserved</div>
+    </footer>
+  
+</apex:component>

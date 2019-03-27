@@ -1,0 +1,7 @@
+<apex:page controller="RS2_RCMOpportunityExpiryRequest" action="{!callStartMethod}" id="OpptyExpiryPageId" showHeader="false" sidebar="false" contentType="text/javascript">
+  {!JSonSring}
+</apex:page>
+
+<!-- 
+Test using url: https://c.ap1.visual.force.com/apex/JSONExample2?JSONPOSTDATA=%7B%22incrf%22%3A%22aa%22%7D
+-->

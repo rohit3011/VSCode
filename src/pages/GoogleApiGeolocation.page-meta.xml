@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApexPage xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>37.0</apiVersion>
+    <availableInTouch>false</availableInTouch>
+    <confirmationTokenRequired>false</confirmationTokenRequired>
+    <description>Get geolocation based on the address you entered.
+https://maps.googleapis.com/maps/api/geocode/json?address=%27Block%2012%20Tilak%20Nagar%20Delhi%27&amp;key=AIzaSyDkkbdNxHjvCe_qbj0tHsjBlAdal6bT6cc</description>
+    <label>GoogleApiGeolocation</label>
+    <packageVersions>
+        <majorNumber>1</majorNumber>
+        <minorNumber>2</minorNumber>
+        <namespace>CodeCReport</namespace>
+    </packageVersions>
+    <packageVersions>
+        <majorNumber>1</majorNumber>
+        <minorNumber>7</minorNumber>
+        <namespace>sf_com_apps</namespace>
+    </packageVersions>
+</ApexPage>

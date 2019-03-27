@@ -1,0 +1,9 @@
+<apex:page standardStylesheets="false" showHeader="false" sidebar="false" applyBodyTag="false" cache="true">  
+    
+    <title>Rohit Developer Account</title>
+    
+    <apex:outputpanel >
+        <c:HomepageComp />
+   </apex:outputpanel>
+    
+ </apex:page>

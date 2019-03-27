@@ -1,0 +1,63 @@
+<apex:page controller="uiDragAndDropController">
+    <apex:stylesheet value="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css"/>
+    <apex:includeScript value="//code.jquery.com/jquery-1.10.2.js"/>
+    <apex:includeScript value="//code.jquery.com/ui/1.11.2/jquery-ui.js"/>
+    
+    <script>
+        var listOrder;
+        var deleteList = '';
+        $(document).ready(function(){
+            $(document.getElementById("{!$Component.theForm.thePageBlock.theTable}")).find("tbody").sortable({    
+                stop: function(e, ui) {
+                    listOrder = $.map($(this).find('td[id$="kAId"]'), function(el) {
+                        return $(el).text(); 
+                    });
+                    console.log('List Order: ' + listOrder);
+                }
+            });
+        });
+        
+        $(document).ready(function(){
+            $('.remove-btn').click(function(){
+                alert('delete');
+                deleteList += $(this).parent().parent().find('td[id$="kAId"]').text() + ',';
+                //deleteList += $(this).find("tr").find('td[id$="kAId"]').text() + ',';
+                $(this).parent().parent().remove();
+                // example to learn join: https://api.jquery.com/map/
+                listOrder = $("table[id$='theTable']").find('td[id$="kAId"]').map(function(i, el) { return $(el).text(); }).get().join();
+                console.log('List Order: ' + listOrder);
+                console.log('Delete List: ' + deleteList);
+            });
+        });
+    
+        function save() {
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.uiDragAndDropController.reorderArticles}',listOrder,deleteList,
+                function(result, event){ 
+                    if (result.startsWith('ERROR') || !event.status) {
+                        console.log('Error: ' + result);
+                    } else{
+                        window.location.reload();
+                    }
+                }    
+            ); 
+        }
+    
+    </script>
+    
+    <apex:form id="theForm">
+        <apex:pageBlock id="thePageBlock" >
+            <apex:pageBlockTable value="{!accounts}" var="account" id="theTable">
+                    <apex:column value="{!account.Rank__c}"/>
+                    <apex:column id="kAId" value="{!account.Id}"/>
+                    <apex:column value="{!account.Name}"/>
+                    <apex:column value="{!account.OwnerId}"/>
+                    <apex:column value="{!account.Fax}"/>
+                    <apex:column ><a href="#" class="remove-btn">X</a></apex:column>
+            </apex:pageBlockTable>
+            
+            <input class="btn" type="button" onclick="save();"  value="Save"/> 
+            
+        </apex:pageBlock>        
+    </apex:form> 
+</apex:page>

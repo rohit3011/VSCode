@@ -1,0 +1,23 @@
+<apex:page >
+    <apex:includeLightning />
+
+  <body>
+    <div id="myDivId"> 
+    </div>
+ 
+    <script>
+        var myUserContext = "{!$User.UITheme}";
+ 
+        $Lightning.use("c:TestProquestApp", function() {
+        $Lightning.createComponent(
+            "c:proquestSitePage",
+            { UserContext: myUserContext },
+            "myDivId",
+            function(cmp) {
+                console.log('component created');
+                console.log(cmp);
+            });
+        });
+     </script>
+ </body>
+</apex:page>

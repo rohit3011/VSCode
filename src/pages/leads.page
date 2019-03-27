@@ -1,0 +1,28 @@
+<apex:page controller="leaddetails1" >
+    <apex:form >
+    <apex:pageBlock title="lead">
+        <apex:pageBlockButtons location="bottom">
+        <apex:commandButton value="save" action="{!createLead}"/>
+        <apex:commandButton value="Cancel" action="{!cancelLead}"/>   
+        </apex:pageBlockButtons>
+        
+        <apex:pageBlockSection >
+        <apex:inputField value="{!lead.Company}"/>
+        <apex:inputField value="{!lead.Email}"/>
+        <apex:inputField value="{!lead.Fax}"/>
+        <apex:inputField value="{!lead.Industry}"/>
+        <apex:inputField value="{!lead.MobilePhone}"/>
+        <apex:inputField value="{!lead.Name    }"/>
+        <apex:inputField value="{!lead.AnnualRevenue}"/>
+        <apex:inputField value="{!lead.Phone}"/>
+        <apex:inputField value="{!lead.FirstName}"/>
+        <apex:inputField value="{!lead.LastName}"/>
+        <apex:inputField value="{!lead.status}"/>
+        <apex:selectList size="1" value="{!State}" id="a" label="Order Reason">
+             <apex:selectOptions value="{!States}"/>
+         </apex:selectList>
+        
+        </apex:pageBlockSection>
+    </apex:pageBlock>
+    </apex:form>
+</apex:page>

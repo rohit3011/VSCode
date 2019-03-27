@@ -1,0 +1,42 @@
+<!-- https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=28.6413653,77.0949373&radius=5000&type=bank&name=bank&key=%20AIzaSyDkkbdNxHjvCe_qbj0tHsjBlAdal6bT6cc -->
+
+<apex:page controller="JSON2Apex" action="{!submit}" showHeader="false" cache="false">  
+    
+    <apex:form >
+        
+        <apex:outputPanel >
+            <div class="header">
+                <c:HomepageComp />
+            </div>
+        </apex:outputPanel>
+        
+        <apex:sectionHeader title="Google Maps Geocoding" subtitle="Find distance between two places"/>
+
+        
+        <apex:pageBlock >
+
+            <apex:pageBlockButtons location="bottom">
+                <apex:commandButton action="{!submit}" value="Submit" rerender="resultsPanel" status="status" />
+            </apex:pageBlockButtons>    
+            
+            <apex:pageMessages />
+
+            This example calls the Google Map geocoding REST service (JSON) with the address you provide below.<p/>
+
+            Sometimes the geocoding services stops responding due to service availability. If you are receiving errors
+            with the returned JSON object, you can check the "Use hard-coded JSON response" to use a returned JSON
+            response hard-coded into the controller from the Googles address.<p/>
+
+            <apex:pageBlockTable value="{!list_BankName}" var="bank">
+                <apex:column headerValue="Bank Name">{!bank}</apex:column>
+                <apex:column headerValue="Bank Address">{!bankVicinityMap[bank]}</apex:column>
+                <apex:column headerValue="Bank Latitude">{!bankLatitudeMap[bank]}</apex:column>
+                <apex:column headerValue="Bank Longitude">{!bankLongitudeMap[bank]}</apex:column>
+                <apex:column headerValue="Bank Open">{!bankOpenNow[bank]}</apex:column>
+            </apex:pageBlockTable> `   
+
+        </apex:pageBlock>
+        
+    </apex:form>
+
+</apex:page>

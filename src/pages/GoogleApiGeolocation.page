@@ -1,0 +1,73 @@
+<!-- https://maps.googleapis.com/maps/api/geocode/json?address=%27Block%2012%20Tilak%20Nagar%20Delhi%27&key=AIzaSyDkkbdNxHjvCe_qbj0tHsjBlAdal6bT6cc -->
+<!-- https://releasenotes.docs.salesforce.com/en-us/winter16/release-notes/rn_lightning_lc_for_vf.htm -->
+<!-- https://developer.salesforce.com/docs/atlas.en-us.lightning.meta/lightning/components_visualforce.htm -->
+<apex:page controller="JSON2ApexGeolocation">  
+
+    <!-- Code to see the page in Lightning -->
+    <apex:includeLightning />
+
+    <div id="lightning" />
+
+    <script>
+        $Lightning.use("c:lcvfTest", function() {
+          $Lightning.createComponent("ui:button",
+          { label : "Press Me!" },
+          "lightning",
+          function(cmp) {
+            // do some stuff
+          });
+        });
+    </script>
+    <!-- End of Code to see the page in Lightning -->
+    <apex:sectionHeader title="Google Maps Geocoding" subtitle="Find distance between two places"/>
+
+    <apex:form >
+        <apex:pageBlock >
+
+            <apex:pageBlockButtons >
+                <apex:commandButton action="{!submit}" value="Submit" rerender="resultsPanel, resultsPanel1" status="status"/>
+            </apex:pageBlockButtons>    
+            
+            <apex:pageMessages />
+
+            This example calls the Google Map geocoding REST service (JSON) with the address
+            you provide below.<p/>
+
+            Sometimes the geocoding services stops responding due to service availability. If you are receiving errors
+            with the returned JSON object, you can check the "Use hard-coded JSON response" to use a returned JSON
+            response hard-coded into the controller from the Googles address.<p/>
+
+            <apex:pageBlockSection columns="1">    
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel for="Address">Address</apex:outputLabel>
+                    <apex:inputText id="city" value="{!address}"/>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+
+            <apex:pageBlockSection columns="1" id="resultsPanel">
+                <apex:actionStatus id="status" startText="Fetching map..."/>
+                <apex:outputPanel rendered="{!showAddress}">
+                    Formatted Address: <apex:outputText value="{!formatAdd}"/><br/>
+                    Latitude :<apex:outputText value="{!lat}"/><br/>    
+                    Longitude :<apex:outputText value="{!lon}"/><br/> 
+                    Longitude :<apex:outputText value="{!list_BankName[0]}"/><br/>    
+                </apex:outputPanel>
+            </apex:pageBlockSection>
+            
+            
+            <apex:pageBlockSection columns="1">
+                <apex:outputPanel id="resultsPanel1">
+                    <apex:pageBlockTable value="{!list_BankName}" var="bank" rendered="{!!ISBLANK(list_BankName)}">
+                        <apex:column headerValue="Bank Name">{!bank}</apex:column>
+                        <apex:column headerValue="Bank Address">{!bankVicinityMap[bank]}</apex:column>
+                        <apex:column headerValue="Bank Latitude">{!bankLatitudeMap[bank]}</apex:column>
+                        <apex:column headerValue="Bank Longitude">{!bankLongitudeMap[bank]}</apex:column>
+                     <!--   <apex:column headerValue="Bank Open">{!bankOpenNow[bank]}</apex:column>  -->
+                        <apex:column headerValue="Bank Open">{!bankOpenNow1[bank]}</apex:column>
+                    </apex:pageBlockTable> 	
+                </apex:outputPanel>    
+    		</apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+
+</apex:page>

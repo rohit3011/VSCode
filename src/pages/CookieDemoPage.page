@@ -1,0 +1,31 @@
+<apex:page standardController="Contact" extensions="cookeiController">
+
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+    
+    <apex:form >
+    
+    Hello <apex:inputText value="{!conLastName}"/>    
+    <apex:commandButton value="Submit" onclick="setCookie();"/>
+    
+    <!--Way to set a cookie from javascript -->
+    <!--Reference: http://developer.force.com/cookbook/recipe/storing-form-field-values-with-the-apex-cookie-class -->
+    <script>
+        function setCookie()
+        {
+            var c_name = 'apex__TestCookie';    <!-- in javascript the cookie name must start from apex__    -->
+            var value = 'Test';
+            var c_value = escape(value);
+            var path = document.location.pathname;
+            path = (path.split('/')[1] != null) ? '/' + path.split('/')[1] + '/' : '/';
+            c_value += ";path=" + path;
+            alert(c_value);
+            console.log('Set cookie: ' + c_value);
+            document.cookie = c_name + "=" + c_value;
+            console.log('Set cookie: ' + document.cookie);
+        }
+        
+    </script>
+    
+</apex:form>
+
+</apex:page>

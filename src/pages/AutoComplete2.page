@@ -1,0 +1,97 @@
+<apex:page controller="AutoCompleteController">
+    
+    <style>
+        .displayNone { 
+            display:none; 
+        }
+        .displayBlock {
+            display:block;
+        }
+        .ui-autocomplete-loading { 
+            background: white url(/img/loading32.gif) right center no-repeat;
+            background-size:15px 15px; 
+        }
+        .placeHolder {
+            font-style: italic;
+        }
+    </style>
+    
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" />
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" ></script>
+        <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js" />
+		<apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.0/jquery-ui.min.js" />
+		<apex:styleSheet value="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.0/themes/smoothness/jquery-ui.css" />
+    <apex:form id="autoCompleteForm" >
+        <apex:pageBlock id="searchBlock" >
+            <apex:pageBlockSection id="searchSection" title="Find an Account" columns="1" >
+                 <apex:outputLabel value="Movie Name" for="movieBox"/>
+                 <apex:outputPanel >
+                     <apex:inputText id="movieTextBoxId" value="{!searchTerm}" styleClass="placeHolder"/>
+                     <apex:inputHidden id="searchMovieId" value="{!selectedMovie}" />
+                 </apex:outputPanel>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        
+    </apex:form>
+    
+    
+    <script type="text/javascript">
+    var PLACEHOLDER = 'Enter Account Name Here'; 
+    var movieObjects;
+    var queryTerm;
+    
+    $('[id$=movieTextBoxId]').autocomplete({
+        minLength: 2,
+        source: function(request, response) {
+                    queryTerm = request.term;
+            //alert(queryTerm);
+                    AutoCompleteController.searchMovie(request.term, function(result, event){
+                        if(event.type == 'exception') {
+                              alert(event.message);
+                        } else {
+                             movieObjects = result;
+                             response(movieObjects);
+                        }
+                    });
+               },
+        focus: function( event, ui ) {
+                $('[id$=movieTextBoxId]').val( ui.item.Name );
+                return false;
+                },
+        select: function( event, ui ) {
+                    $('[id$=movieTextBoxId]').val( ui.item.Name );
+                    $('[id$=searchMovieId]').val( ui.item.Id );
+                    return false;
+                },
+     })
+     .data( "ui-autocomplete" )._renderItem = function( ul, item ) {
+        var entry = "<a>" + item.Name;
+       
+        entry = entry + "</a>";
+        entry = entry.replace(queryTerm, "<b>" + queryTerm + "</b>");
+        return $( "<li></li>" )
+            .data( "item.autocomplete", item )
+            .append( entry )
+            .appendTo( ul );
+    };
+        
+    // Add or remove placeholder values
+    $('[id$=movieTextBoxId]').val(PLACEHOLDER);
+    $('[id$=movieTextBoxId]').on("focus",  function(event){
+        $tgt = $(event.target);
+        if($tgt.val() === PLACEHOLDER ){
+            $tgt.val('');
+            $tgt.removeClass('placeHolder');
+        }
+    });
+    $('[id$=movieTextBoxId]').on( "blur",  function(event){
+        $tgt = $(event.target);
+        if($tgt.val() === '' ){
+            $tgt.val(PLACEHOLDER);
+            $tgt.addClass('placeHolder');
+        }
+    });
+</script>
+    
+    
+</apex:page>

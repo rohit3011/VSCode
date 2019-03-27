@@ -1,0 +1,24 @@
+<apex:page showHeader="false" sidebar="false">
+    
+    <apex:includeLightning />
+
+  <body>
+    <div id="myDivId"> 
+    </div>
+ 
+    <script>
+        var myUserContext = "{!$User.UITheme}";
+ 
+        $Lightning.use("c:loginApplication", function() {
+        $Lightning.createComponent(
+            "c:loginForm",
+            { UserContext: myUserContext },
+            "myDivId",
+            function(cmp) {
+                console.log('component created');
+                console.log(cmp);
+            });
+        });
+     </script>
+ </body>
+</apex:page>

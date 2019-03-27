@@ -1,0 +1,151 @@
+.breadcrumb-small {
+	font-size: 85%;
+}
+
+.panel {
+	border-radius: 5px;
+	border: none;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+ 	transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+}
+
+.panel-heading {
+	padding: 10px 15px;
+	border:none;
+	border-top-right-radius: 5px;
+	border-top-left-radius: 5px;
+}
+
+.panel-footer {
+	padding: 10px 15px;
+	background-color: #636363;
+	margin-bottom: 0px;
+}
+
+.panel-footer img {
+	width:35%;
+}
+
+h4.footertext {
+	color: #DEDEDE;
+}
+
+.list-group {
+	margin-bottom: 10px
+}
+
+.list-group .uxf-icon {
+	color:#0E7BBA;
+}
+
+.list-group-item {
+	background-color: inherit;
+	border: none;
+	padding: 5px 10px;
+}
+
+.list-group-text {
+	padding-left: 5px;
+}
+
+p.small.metadata strong {
+	margin-right: 20px;
+}
+
+p.small.metadata {
+	display: inline-block;
+}
+
+h1.support-headline {
+	margin-top: 20px;
+}
+
+.support-actions {
+	margin-top: 30px;
+}
+
+.header-padding {
+	padding:0px 30px;
+}
+
+.content-padding {
+	padding:30px 30px 0px 30px;
+}
+
+hr.article-rule{
+	border-top: 6px solid #ECECEC;
+	margin-top: 40px;
+	margin-bottom: 40px;
+}
+
+/* ALT */
+hr.article-rule-list{
+	border-top: 6px solid #ECECEC;
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+
+.left-menu-float {
+	background:#EBEBEB;
+	padding: 10px 10px 0 10px;
+	margin-bottom: 20px;
+	z-index: 100;
+	position: fixed;
+	-webkit-border-radius: 7px;
+	-moz-border-radius: 7px;
+	border-radius: 7px;
+}
+
+.left-menu-float .btn, .left-menu-float .btn-group {
+	display: block;
+	margin-bottom: 10px;
+	width: 100%;
+}
+
+.article-tag-area {
+	display: inline-block;
+}
+
+.label-article {
+	font-weight: normal;
+	font-size: 100%;
+	background-color: #F5F5F5;
+}
+
+.related-articles [class*=col] {
+	padding-left: 0px;
+}
+
+.img-rounded.pull-left {
+	border: #EEEEEE solid 6px;
+	margin: 0px 15px 10px 0px;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+}
+
+.fixed{
+    /*position:fixed;
+    top:0;
+    right:0;*/
+}
+
+.bottom{
+    /*top:auto;*/
+    bottom:400px;
+    /*position:absolute;*/
+}
+
+@media (max-width: 1200px) {
+	
+	.left-menu-float {
+		position: relative;
+		padding-bottom: 10px;
+	}
+	
+	.left-menu-float .btn, .left-menu-float .btn-group {
+		display: inline-block;
+		margin-bottom: 0px;
+		width:auto;
+	}
+	
+}

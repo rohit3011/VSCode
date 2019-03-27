@@ -1,0 +1,13 @@
+<apex:page controller="WebserviceCall">  
+    <apex:form >
+        <apex:PageBlock >
+            <apex:commandButton action="{!hello}" value="Initiate Webservice Call" /> <br /><br />
+
+                Country Name :<apex:inputText value="{!countryName}"/><br />
+                CIty Name &nbsp; &nbsp;:<apex:inputText value="{!cityName}"/><br /><br />
+
+                Current Weather is  --->  <apex:OutputText value="{!message}"/>
+
+        </apex:PageBlock>
+    </apex:form>
+</apex:page>

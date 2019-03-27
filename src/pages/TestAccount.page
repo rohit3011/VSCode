@@ -1,0 +1,11 @@
+<apex:page standardController="Case" Extensions="caseComment1">
+    <apex:form >
+    <apex:pageBlock title="AB Welcome Call/Enrollment Call ">
+        <apex:pageBlockSection title="Summary" columns="2">
+            
+        </apex:pageBlockSection>
+    
+    
+    </apex:pageBlock>
+   </apex:form> 
+</apex:page>
