@@ -3,6 +3,7 @@ public with sharing class AccountController{
     public static final string test1 = 'first Variable';
     public static final string test2 = 'second Variable';
     public static final string test4 = 'Fourth Variable';
+    public static final string test3 = 'Third Variable';
 
    @AuraEnabled
    public static list<Account> lstaccounts(){
